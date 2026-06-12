@@ -9,8 +9,9 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 app.use(express.json());
 app.use(express.static('public'));
 
+// Free limit check - 3 per day using simple tracking
 app.post('/repurpose', async (req, res) => {
-  const { content, contentType, platforms } = req.body;
+  const { content, contentType, platforms, usageCount } = req.body;
   
   if (!content) {
     return res.status(400).json({ error: 'Content is required' });
@@ -18,6 +19,14 @@ app.post('/repurpose', async (req, res) => {
 
   if (!platforms || platforms.length === 0) {
     return res.status(400).json({ error: 'Please select at least one platform' });
+  }
+
+  // Check free limit
+  if (usageCount >= 3) {
+    return res.status(429).json({ 
+      error: 'limit_exceeded',
+      message: 'Free limit reached! Upgrade to Pro for unlimited access.'
+    });
   }
 
   try {
