@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal - Repurposer AI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0f0f1a; color: #fff; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; text-align: center; }
+        .header h1 { font-size: 1.8rem; font-weight: 700; }
+        .header a { color: #fff; text-decoration: none; opacity: 0.8; font-size: 0.9rem; }
+        .header a:hover { opacity: 1; }
+        .container { max-width: 800px; margin: 40px auto; padding: 0 20px 60px; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 30px; }
+        .tab { padding: 10px 25px; border-radius: 8px; border: 1px solid #333; background: transparent; color: #aaa; cursor: pointer; font-size: 1rem; transition: all 0.3s; }
+        .tab.active { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border-color: transparent; }
+        .section { display: none; }
+        .section.active { display: block; }
+        .section h2 { color: #667eea; font-size: 1.4rem; margin: 30px 0 12px; }
+        .section h2:first-child { margin-top: 0; }
+        .section p { color: #ccc; line-height: 1.8; margin-bottom: 12px; }
+        .section ul { color: #ccc; line-height: 1.8; padding-left: 20px; margin-bottom: 12px; }
+        .section ul li { margin-bottom: 6px; }
+        .updated { color: #666; font-size: 0.85rem; margin-bottom: 25px; }
+        .highlight { background: #1a1a2e; border-left: 3px solid #667eea; padding: 15px; border-radius: 0 8px 8px 0; margin: 15px 0; color: #ccc; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⚡ Repurposer AI — Legal</h1>
+        <a href="/">← Back to App</a>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('privacy')">Privacy Policy</button>
+            <button class="tab" onclick="showTab('terms')">Terms of Service</button>
+        </div>
+
+        <!-- PRIVACY POLICY -->
+        <div class="section active" id="privacy">
+            <p class="updated">Last updated: June 2026</p>
+
+            <h2>1. Who We Are</h2>
+            <p>Repurposer AI is an AI-powered content repurposing tool that helps creators transform their content into multiple formats. We are operated by an independent creator based in India.</p>
+
+            <h2>2. What Data We Collect</h2>
+            <ul>
+                <li>Content you paste into the tool for repurposing</li>
+                <li>Basic usage data (number of repurposes used)</li>
+                <li>Email address (only if you create an account)</li>
+                <li>Payment information (processed securely by Cashfree / Lemon Squeezy — we never store card details)</li>
+            </ul>
+
+            <h2>3. How We Use Your Data</h2>
+            <ul>
+                <li>To provide the repurposing service</li>
+                <li>To track your daily usage limit</li>
+                <li>To process payments for Pro subscriptions</li>
+                <li>We do NOT sell your data to anyone</li>
+                <li>We do NOT use your content to train AI models</li>
+            </ul>
+
+            <div class="highlight">
+                Your content is sent to Groq AI API for processing and is NOT stored on our servers after repurposing is complete.
+            </div>
+
+            <h2>4. Cookies</h2>
+            <p>We use minimal cookies only to track your free usage limit (3 repurposes per day). No advertising or tracking cookies are used.</p>
+
+            <h2>5. Third Party Services</h2>
+            <ul>
+                <li><strong>Groq AI</strong> — processes your content for repurposing</li>
+                <li><strong>Cashfree</strong> — handles Indian payments</li>
+                <li><strong>Lemon Squeezy</strong> — handles international payments</li>
+                <li><strong>Vercel</strong> — hosts this application</li>
+            </ul>
+
+            <h2>6. Your Rights</h2>
+            <p>You can request deletion of your account and data at any time by emailing us. We will process your request within 7 days.</p>
+
+            <h2>7. Contact</h2>
+            <p>For any privacy concerns, email us at: <strong>support@repurposerai.com</strong></p>
+        </div>
+
+        <!-- TERMS OF SERVICE -->
+        <div class="section" id="terms">
+            <p class="updated">Last updated: June 2026</p>
+
+            <h2>1. Acceptance of Terms</h2>
+            <p>By using Repurposer AI, you agree to these Terms of Service. If you do not agree, please do not use our service.</p>
+
+            <h2>2. What Repurposer AI Does</h2>
+            <p>Repurposer AI uses artificial intelligence to transform your content into multiple formats including Twitter threads, LinkedIn posts, Instagram captions, and newsletter sections.</p>
+
+            <h2>3. Free Plan</h2>
+            <ul>
+                <li>Free users get <strong>3 repurposes per day</strong></li>
+                <li>Free plan is provided as-is with no uptime guarantee</li>
+                <li>We reserve the right to change free limits at any time</li>
+            </ul>
+
+            <h2>4. Pro Plan</h2>
+            <ul>
+                <li>Pro users get unlimited repurposes</li>
+                <li>Billed monthly — ₹199/month (India) or $5/month (International)</li>
+                <li>Cancel anytime — no questions asked</li>
+                <li>Refunds available within 7 days of payment if unsatisfied</li>
+            </ul>
+
+            <h2>5. Acceptable Use</h2>
+            <div class="highlight">
+                You may NOT use Repurposer AI to repurpose content that is illegal, harmful, hateful, or violates copyright laws. You are responsible for ensuring you have rights to the content you repurpose.
+            </div>
+
+            <h2>6. AI Generated Content</h2>
+            <p>AI-generated content may not always be accurate. Always review repurposed content before publishing. We are not responsible for any errors in AI-generated output.</p>
+
+            <h2>7. Service Availability</h2>
+            <p>We aim for maximum uptime but do not guarantee 100% availability. Maintenance or technical issues may cause temporary downtime.</p>
+
+            <h2>8. Changes to Terms</h2>
+            <p>We may update these terms at any time. Continued use of the service means you accept the updated terms.</p>
+
+            <h2>9. Contact</h2>
+            <p>For any questions about these terms: <strong>support@repurposerai.com</strong></p>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tab) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
