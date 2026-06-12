@@ -13,7 +13,8 @@
         .usage-bar { background: #1a1a2e; padding: 10px 20px; text-align: center; font-size: 0.9rem; color: #aaa; border-bottom: 1px solid #222; }
         .usage-bar span { color: #667eea; font-weight: 600; }
         .usage-bar .upgrade-link { color: #f093fb; text-decoration: none; margin-left: 10px; font-weight: 600; }
-        .usage-bar .upgrade-link:hover { text-decoration: underline; }
+        .usage-bar.empty { background: #2d1b1b; }
+        .usage-bar.empty span { color: #ff6666; }
         .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
         .input-section { background: #1a1a2e; border-radius: 16px; padding: 30px; margin-bottom: 30px; }
         .input-section h2 { margin-bottom: 20px; color: #667eea; }
@@ -41,27 +42,20 @@
         .copy-btn { margin-top: 12px; padding: 8px 18px; background: transparent; border: 1px solid #667eea; border-radius: 6px; color: #667eea; cursor: pointer; font-size: 0.9rem; transition: all 0.3s; }
         .copy-btn:hover { background: #667eea; color: #fff; }
         .error { background: #2d1b1b; border: 1px solid #ff4444; border-radius: 8px; padding: 15px; color: #ff6666; margin-top: 15px; display: none; }
-
-        /* UPGRADE WALL */
         .upgrade-wall { display: none; background: #1a1a2e; border-radius: 16px; padding: 40px 30px; text-align: center; margin-bottom: 30px; border: 2px solid #667eea; }
+        .upgrade-wall .emoji { font-size: 3rem; margin-bottom: 15px; }
         .upgrade-wall h2 { font-size: 1.6rem; margin-bottom: 10px; }
         .upgrade-wall p { color: #aaa; margin-bottom: 25px; line-height: 1.6; }
-        .upgrade-wall .emoji { font-size: 3rem; margin-bottom: 15px; }
-        .plans { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 25px; }
-        .plan { background: #0f0f1a; border-radius: 12px; padding: 20px; border: 1px solid #333; }
-        .plan.popular { border-color: #667eea; position: relative; }
-        .plan.popular::before { content: '⭐ Popular'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #667eea; color: #fff; padding: 3px 12px; border-radius: 20px; font-size: 0.75rem; white-space: nowrap; }
-        .plan h3 { font-size: 1.1rem; margin-bottom: 8px; }
-        .plan .price { font-size: 1.8rem; font-weight: 700; color: #667eea; margin-bottom: 5px; }
-        .plan .price span { font-size: 0.9rem; color: #aaa; font-weight: 400; }
-        .plan ul { list-style: none; color: #aaa; font-size: 0.9rem; text-align: left; }
-        .plan ul li { padding: 4px 0; }
-        .plan ul li::before { content: '✓ '; color: #667eea; }
-        .btn-upgrade { display: inline-block; padding: 14px 35px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 8px; color: #fff; font-size: 1rem; font-weight: 600; cursor: pointer; text-decoration: none; margin: 5px; transition: opacity 0.3s; }
+        .plan-card { background: #0f0f1a; border-radius: 12px; padding: 25px; border: 2px solid #667eea; max-width: 320px; margin: 0 auto 25px; }
+        .plan-card h3 { font-size: 1.2rem; margin-bottom: 10px; }
+        .plan-price { font-size: 2rem; font-weight: 700; color: #667eea; margin-bottom: 15px; }
+        .plan-card ul { list-style: none; color: #aaa; font-size: 0.95rem; text-align: left; }
+        .plan-card ul li { padding: 5px 0; }
+        .plan-card ul li::before { content: '✓ '; color: #667eea; }
+        .btn-upgrade { display: inline-block; padding: 14px 35px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 8px; color: #fff; font-size: 1rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: opacity 0.3s; }
         .btn-upgrade:hover { opacity: 0.9; }
-        .btn-free { background: transparent; border: 1px solid #555; color: #aaa; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; margin-top: 10px; }
-        .btn-free:hover { border-color: #667eea; color: #fff; }
-
+        .btn-back { background: transparent; border: 1px solid #555; color: #aaa; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; margin-top: 15px; display: block; margin-left: auto; margin-right: auto; }
+        .btn-back:hover { border-color: #667eea; color: #fff; }
         footer { text-align: center; padding: 30px 20px; color: #555; font-size: 0.85rem; border-top: 1px solid #1a1a2e; margin-top: 40px; }
         footer a { color: #667eea; text-decoration: none; }
     </style>
@@ -74,7 +68,7 @@
 
     <div class="usage-bar" id="usageBar">
         Free plan: <span id="usageText">3</span> repurposes remaining today
-        <a href="#" class="upgrade-link" onclick="showUpgrade()">⚡ Upgrade to Pro</a>
+        <a href="#" class="upgrade-link" onclick="showUpgrade(); return false;">⚡ Upgrade to Pro</a>
     </div>
 
     <div class="container">
@@ -83,36 +77,22 @@
         <div class="upgrade-wall" id="upgradeWall">
             <div class="emoji">🚀</div>
             <h2>You've used all 3 free repurposes today!</h2>
-            <p>Upgrade to Pro for unlimited repurposes, faster processing, and priority support. Reset happens every day at midnight.</p>
-
-            <div class="plans">
-                <div class="plan">
-                    <h3>🇮🇳 India</h3>
-                    <div class="price">₹199 <span>/month</span></div>
-                    <ul>
-                        <li>Unlimited repurposes</li>
-                        <li>All 4 platforms</li>
-                        <li>Priority processing</li>
-                        <li>Cancel anytime</li>
-                    </ul>
-                </div>
-                <div class="plan popular">
-                    <h3>🌍 International</h3>
-                    <div class="price">$5 <span>/month</span></div>
-                    <ul>
-                        <li>Unlimited repurposes</li>
-                        <li>All 4 platforms</li>
-                        <li>Priority processing</li>
-                        <li>Cancel anytime</li>
-                    </ul>
-                </div>
+            <p>Upgrade to Pro for unlimited repurposes, faster processing, and priority support.<br>Free limit resets every day at midnight.</p>
+            <div class="plan-card">
+                <h3>⚡ Pro Plan</h3>
+                <div class="plan-price" id="planPrice">Loading...</div>
+                <ul>
+                    <li>Unlimited repurposes</li>
+                    <li>All 4 platforms</li>
+                    <li>Priority processing</li>
+                    <li>Cancel anytime</li>
+                </ul>
             </div>
-
             <a href="#" class="btn-upgrade">⚡ Upgrade Now — Coming Soon</a>
-            <br>
-            <button class="btn-free" onclick="hideUpgrade()">← Go back, use tomorrow's free limit</button>
+            <button class="btn-back" onclick="hideUpgrade()">← Go back</button>
         </div>
 
+        <!-- MAIN INPUT -->
         <div class="input-section" id="inputSection">
             <h2>📝 Your Content</h2>
             <select id="contentType">
@@ -122,7 +102,6 @@
                 <option value="article">Article</option>
             </select>
             <textarea id="contentInput" placeholder="Paste your blog post, YouTube transcript, article, or any content here..."></textarea>
-
             <div class="platforms">
                 <h3>🎯 Select Platforms to Repurpose For:</h3>
                 <div class="checkbox-grid">
@@ -144,7 +123,6 @@
                     </div>
                 </div>
             </div>
-
             <button class="btn" onclick="repurpose()" id="repurposeBtn">⚡ Repurpose My Content</button>
             <div class="error" id="errorMsg"></div>
         </div>
@@ -170,14 +148,15 @@
     <script>
         const FREE_LIMIT = 3;
 
-        // Get today's usage from localStorage
         function getTodayUsage() {
             const today = new Date().toDateString();
-            const stored = localStorage.getItem('repurposer_usage');
-            if (!stored) return 0;
-            const data = JSON.parse(stored);
-            if (data.date !== today) return 0;
-            return data.count || 0;
+            try {
+                const stored = localStorage.getItem('repurposer_usage');
+                if (!stored) return 0;
+                const data = JSON.parse(stored);
+                if (data.date !== today) return 0;
+                return data.count || 0;
+            } catch(e) { return 0; }
         }
 
         function setTodayUsage(count) {
@@ -190,8 +169,7 @@
             const remaining = Math.max(0, FREE_LIMIT - used);
             document.getElementById('usageText').textContent = remaining;
             if (remaining === 0) {
-                document.getElementById('usageBar').style.background = '#2d1b1b';
-                document.getElementById('usageText').style.color = '#ff6666';
+                document.getElementById('usageBar').classList.add('empty');
             }
         }
 
@@ -199,6 +177,8 @@
             document.getElementById('upgradeWall').style.display = 'block';
             document.getElementById('inputSection').style.display = 'none';
             document.getElementById('results').style.display = 'none';
+            document.getElementById('loading').style.display = 'none';
+            setPricing();
         }
 
         function hideUpgrade() {
@@ -206,7 +186,19 @@
             document.getElementById('inputSection').style.display = 'block';
         }
 
-        // Checkbox highlight
+        async function setPricing() {
+            try {
+                const res = await fetch('https://ipapi.co/json/');
+                const data = await res.json();
+                const isIndia = data.country_code === 'IN';
+                document.getElementById('planPrice').innerHTML = isIndia
+                    ? '₹199 <span style="font-size:0.9rem;color:#aaa;font-weight:400;">/month</span>'
+                    : '$5 <span style="font-size:0.9rem;color:#aaa;font-weight:400;">/month</span>';
+            } catch(e) {
+                document.getElementById('planPrice').innerHTML = '$5 <span style="font-size:0.9rem;color:#aaa;font-weight:400;">/month</span>';
+            }
+        }
+
         document.querySelectorAll('.checkbox-item input').forEach(cb => {
             cb.addEventListener('change', function() {
                 const box = this.closest('.checkbox-item');
@@ -217,11 +209,7 @@
 
         async function repurpose() {
             const usageCount = getTodayUsage();
-
-            if (usageCount >= FREE_LIMIT) {
-                showUpgrade();
-                return;
-            }
+            if (usageCount >= FREE_LIMIT) { showUpgrade(); return; }
 
             const content = document.getElementById('contentInput').value.trim();
             const contentType = document.getElementById('contentType').value;
@@ -253,13 +241,9 @@
                 });
                 const data = await response.json();
 
-                if (data.error === 'limit_exceeded') {
-                    showUpgrade();
-                    return;
-                }
+                if (data.error === 'limit_exceeded') { showUpgrade(); return; }
 
                 if (data.success) {
-                    // Increment usage
                     setTodayUsage(usageCount + 1);
                     updateUsageBar();
                     displayResults(data.repurposed);
@@ -279,34 +263,22 @@
         function displayResults(text) {
             const results = document.getElementById('results');
             const icons = { 'TWITTER': '🐦', 'LINKEDIN': '💼', 'INSTAGRAM': '📸', 'NEWSLETTER': '📧' };
-
+            const labels = { 'TWITTER': 'Twitter Thread', 'LINKEDIN': 'LinkedIn Post', 'INSTAGRAM': 'Instagram Caption', 'NEWSLETTER': 'Newsletter Section' };
             const lines = text.split('\n');
-            let sections = {};
-            let current = '';
-
+            let sections = {}, current = '';
             for (const line of lines) {
                 const l = line.toUpperCase();
                 if (l.includes('TWITTER')) current = 'TWITTER';
                 else if (l.includes('LINKEDIN')) current = 'LINKEDIN';
                 else if (l.includes('INSTAGRAM')) current = 'INSTAGRAM';
                 else if (l.includes('NEWSLETTER')) current = 'NEWSLETTER';
-                else if (current) {
-                    sections[current] = (sections[current] || '') + line + '\n';
-                }
+                else if (current) sections[current] = (sections[current] || '') + line + '\n';
             }
-
-            const order = ['TWITTER', 'LINKEDIN', 'INSTAGRAM', 'NEWSLETTER'];
-            const labels = { 'TWITTER': 'Twitter Thread', 'LINKEDIN': 'LinkedIn Post', 'INSTAGRAM': 'Instagram Caption', 'NEWSLETTER': 'Newsletter Section' };
-
-            order.forEach(key => {
+            ['TWITTER','LINKEDIN','INSTAGRAM','NEWSLETTER'].forEach(key => {
                 if (sections[key]) {
                     const card = document.createElement('div');
                     card.className = 'result-card';
-                    card.innerHTML = `
-                        <h3>${icons[key]} ${labels[key]}</h3>
-                        <div class="result-content">${sections[key].trim()}</div>
-                        <button class="copy-btn" onclick="copyText(this)">Copy</button>
-                    `;
+                    card.innerHTML = `<h3>${icons[key]} ${labels[key]}</h3><div class="result-content">${sections[key].trim()}</div><button class="copy-btn" onclick="copyText(this)">Copy</button>`;
                     results.appendChild(card);
                 }
             });
@@ -321,9 +293,7 @@
 
         // Init
         updateUsageBar();
-        if (getTodayUsage() >= FREE_LIMIT) {
-            showUpgrade();
-        }
+        if (getTodayUsage() >= FREE_LIMIT) { showUpgrade(); }
     </script>
 </body>
 </html>
