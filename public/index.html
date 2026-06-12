@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repurposer AI - Turn One Content Into Many</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0f0f1a; color: #fff; min-height: 100vh; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; text-align: center; }
+        .header h1 { font-size: 2rem; font-weight: 700; }
+        .header p { opacity: 0.9; margin-top: 5px; }
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        .input-section { background: #1a1a2e; border-radius: 16px; padding: 30px; margin-bottom: 30px; }
+        .input-section h2 { margin-bottom: 20px; color: #667eea; }
+        select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #333; background: #0f0f1a; color: #fff; font-size: 1rem; margin-bottom: 20px; }
+        textarea { width: 100%; height: 180px; padding: 15px; border-radius: 8px; border: 1px solid #333; background: #0f0f1a; color: #fff; font-size: 1rem; resize: vertical; }
+        textarea::placeholder { color: #666; }
+        .platforms { margin: 20px 0; }
+        .platforms h3 { color: #667eea; margin-bottom: 12px; font-size: 1rem; }
+        .checkbox-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .checkbox-item { display: flex; align-items: center; gap: 10px; background: #0f0f1a; padding: 12px 16px; border-radius: 10px; border: 1px solid #333; cursor: pointer; transition: all 0.3s; }
+        .checkbox-item:hover { border-color: #667eea; }
+        .checkbox-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: #667eea; cursor: pointer; }
+        .checkbox-item label { cursor: pointer; font-size: 0.95rem; }
+        .checkbox-item.checked { border-color: #667eea; background: #1a1a3e; }
+        .btn { width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 8px; color: #fff; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 15px; transition: opacity 0.3s; }
+        .btn:hover { opacity: 0.9; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .loading { text-align: center; padding: 40px; display: none; }
+        .spinner { width: 50px; height: 50px; border: 4px solid #333; border-top: 4px solid #667eea; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .results { display: none; }
+        .result-card { background: #1a1a2e; border-radius: 16px; padding: 25px; margin-bottom: 20px; border-left: 4px solid #667eea; }
+        .result-card h3 { color: #667eea; margin-bottom: 15px; font-size: 1.1rem; }
+        .result-content { white-space: pre-wrap; line-height: 1.7; color: #ddd; }
+        .copy-btn { margin-top: 12px; padding: 8px 18px; background: transparent; border: 1px solid #667eea; border-radius: 6px; color: #667eea; cursor: pointer; font-size: 0.9rem; transition: all 0.3s; }
+        .copy-btn:hover { background: #667eea; color: #fff; }
+        .error { background: #2d1b1b; border: 1px solid #ff4444; border-radius: 8px; padding: 15px; color: #ff6666; margin-top: 15px; display: none; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⚡ Repurposer AI</h1>
+        <p>Paste your content — get Twitter, LinkedIn, Instagram & Newsletter instantly</p>
+    </div>
+
+    <div class="container">
+        <div class="input-section">
+            <h2>📝 Your Content</h2>
+            <select id="contentType">
+                <option value="blog post">Blog Post</option>
+                <option value="YouTube video transcript">YouTube Transcript</option>
+                <option value="podcast notes">Podcast Notes</option>
+                <option value="article">Article</option>
+            </select>
+            <textarea id="contentInput" placeholder="Paste your blog post, YouTube transcript, article, or any content here..."></textarea>
+
+            <div class="platforms">
+                <h3>🎯 Select Platforms to Repurpose For:</h3>
+                <div class="checkbox-grid">
+                    <div class="checkbox-item" id="box-twitter">
+                        <input type="checkbox" id="twitter" checked>
+                        <label for="twitter">🐦 Twitter Thread</label>
+                    </div>
+                    <div class="checkbox-item" id="box-linkedin">
+                        <input type="checkbox" id="linkedin" checked>
+                        <label for="linkedin">💼 LinkedIn Post</label>
+                    </div>
+                    <div class="checkbox-item" id="box-instagram">
+                        <input type="checkbox" id="instagram" checked>
+                        <label for="instagram">📸 Instagram Caption</label>
+                    </div>
+                    <div class="checkbox-item" id="box-newsletter">
+                        <input type="checkbox" id="newsletter" checked>
+                        <label for="newsletter">📧 Newsletter</label>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn" onclick="repurpose()" id="repurposeBtn">⚡ Repurpose My Content</button>
+            <div class="error" id="errorMsg"></div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>AI is repurposing your content...</p>
+        </div>
+
+        <div class="results" id="results"></div>
+    </div>
+
+    <script>
+        // Checkbox highlight effect
+        document.querySelectorAll('.checkbox-item input').forEach(cb => {
+            cb.addEventListener('change', function() {
+                const box = this.closest('.checkbox-item');
+                if (this.checked) box.classList.add('checked');
+                else box.classList.remove('checked');
+            });
+            if (cb.checked) cb.closest('.checkbox-item').classList.add('checked');
+        });
+
+        async function repurpose() {
+            const content = document.getElementById('contentInput').value.trim();
+            const contentType = document.getElementById('contentType').value;
+            const btn = document.getElementById('repurposeBtn');
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            const errorMsg = document.getElementById('errorMsg');
+
+            // Get selected platforms
+            const selected = [];
+            if (document.getElementById('twitter').checked) selected.push('TWITTER THREAD (5 tweets with numbers and hashtags)');
+            if (document.getElementById('linkedin').checked) selected.push('LINKEDIN POST (professional tone, 150 words)');
+            if (document.getElementById('instagram').checked) selected.push('INSTAGRAM CAPTION (engaging, with hashtags)');
+            if (document.getElementById('newsletter').checked) selected.push('NEWSLETTER SECTION (200 words)');
+
+            if (!content) { alert('Please paste your content first!'); return; }
+            if (selected.length === 0) { alert('Please select at least one platform!'); return; }
+
+            btn.disabled = true;
+            loading.style.display = 'block';
+            results.style.display = 'none';
+            results.innerHTML = '';
+            errorMsg.style.display = 'none';
+
+            try {
+                const response = await fetch('/repurpose', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content, contentType, platforms: selected })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    displayResults(data.repurposed, selected);
+                    results.style.display = 'block';
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (err) {
+                errorMsg.textContent = 'Error: ' + err.message;
+                errorMsg.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                loading.style.display = 'none';
+            }
+        }
+
+        function displayResults(text, selected) {
+            const results = document.getElementById('results');
+            const icons = { 'TWITTER': '🐦', 'LINKEDIN': '💼', 'INSTAGRAM': '📸', 'NEWSLETTER': '📧' };
+            const ids = { 'TWITTER': 'res-twitter', 'LINKEDIN': 'res-linkedin', 'INSTAGRAM': 'res-instagram', 'NEWSLETTER': 'res-newsletter' };
+
+            const lines = text.split('\n');
+            let sections = {};
+            let current = '';
+
+            for (const line of lines) {
+                const l = line.toUpperCase();
+                if (l.includes('TWITTER')) current = 'TWITTER';
+                else if (l.includes('LINKEDIN')) current = 'LINKEDIN';
+                else if (l.includes('INSTAGRAM')) current = 'INSTAGRAM';
+                else if (l.includes('NEWSLETTER')) current = 'NEWSLETTER';
+                else if (current) {
+                    sections[current] = (sections[current] || '') + line + '\n';
+                }
+            }
+
+            const order = ['TWITTER', 'LINKEDIN', 'INSTAGRAM', 'NEWSLETTER'];
+            order.forEach(key => {
+                if (sections[key]) {
+                    const card = document.createElement('div');
+                    card.className = 'result-card';
+                    card.id = ids[key];
+                    card.innerHTML = `
+                        <h3>${icons[key]} ${key.charAt(0) + key.slice(1).toLowerCase()} ${key === 'TWITTER' ? 'Thread' : key === 'LINKEDIN' ? 'Post' : key === 'INSTAGRAM' ? 'Caption' : 'Section'}</h3>
+                        <div class="result-content">${sections[key].trim()}</div>
+                        <button class="copy-btn" onclick="copyText(this)">Copy</button>
+                    `;
+                    results.appendChild(card);
+                }
+            });
+        }
+
+        function copyText(btn) {
+            const text = btn.previousElementSibling.textContent;
+            navigator.clipboard.writeText(text);
+            btn.textContent = 'Copied!';
+            setTimeout(() => btn.textContent = 'Copy', 2000);
+        }
+    </script>
+</body>
+</html>
