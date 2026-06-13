@@ -59,6 +59,7 @@
         footer { text-align: center; padding: 30px 20px; color: #555; font-size: 0.85rem; border-top: 1px solid #1a1a2e; margin-top: 40px; }
         footer a { color: #667eea; text-decoration: none; }
     </style>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
     <div class="header">
@@ -88,7 +89,7 @@
                     <li>Cancel anytime</li>
                 </ul>
             </div>
-            <a href="#" class="btn-upgrade">⚡ Upgrade Now — Coming Soon</a>
+            <a href="#" class="btn-upgrade">⚡ <a href="#" class="btn-upgrade" id="upgradeBtn" onclick="startPayment(); return false;">⚡ Upgrade to Pro</a></a>
             <button class="btn-back" onclick="hideUpgrade()">← Go back</button>
         </div>
 
@@ -290,7 +291,73 @@
             btn.textContent = 'Copied!';
             setTimeout(() => btn.textContent = 'Copy', 2000);
         }
+// Razorpay Payment
+        async function startPayment() {
+            const btn = document.getElementById('upgradeBtn');
+            btn.textContent = 'Loading...';
+            btn.style.opacity = '0.7';
 
+            try {
+                // Detect currency based on IP
+                let currency = 'INR';
+                try {
+                    const ipRes = await fetch('https://ipapi.co/json/');
+                    const ipData = await ipRes.json();
+                    currency = ipData.country_code === 'IN' ? 'INR' : 'USD';
+                } catch(e) { currency = 'INR'; }
+
+                // Create order
+                const orderRes = await fetch('/create-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ currency })
+                });
+                const orderData = await orderRes.json();
+
+                if (!orderData.success) throw new Error('Order creation failed');
+
+                // Open Razorpay checkout
+                const options = {
+                    key: 'rzp_live_T11lDmNXefzXUk',
+                    amount: orderData.order.amount,
+                    currency: orderData.order.currency,
+                    name: 'Repurposer AI',
+                    description: 'Pro Plan - Unlimited Repurposes',
+                    order_id: orderData.order.id,
+                    handler: async function(response) {
+                        // Verify payment
+                        const verifyRes = await fetch('/verify-payment', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(response)
+                        });
+                        const verifyData = await verifyRes.json();
+
+                        if (verifyData.success) {
+                            // Set Pro access
+                            localStorage.setItem('repurposer_pro', 'true');
+                            localStorage.setItem('repurposer_pro_date', new Date().toISOString());
+                            alert('🎉 Welcome to Pro! Unlimited repurposes unlocked!');
+                            hideUpgrade();
+                            updateUsageBar();
+                        } else {
+                            alert('Payment verification failed. Contact support.');
+                        }
+                    },
+                    prefill: { name: '', email: '', contact: '' },
+                    theme: { color: '#667eea' }
+                };
+
+                const rzp = new Razorpay(options);
+                rzp.open();
+
+            } catch(err) {
+                alert('Payment failed: ' + err.message);
+            } finally {
+                btn.textContent = '⚡ Upgrade to Pro';
+                btn.style.opacity = '1';
+            }
+        }
         // Init
         updateUsageBar();
         if (getTodayUsage() >= FREE_LIMIT) { showUpgrade(); }
