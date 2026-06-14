@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Repurposer AI - Turn One Content Into Many</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: #0f0f1a; color: #fff; min-height: 100vh; }
@@ -16,11 +17,34 @@
         .usage-bar.empty { background: #2d1b1b; }
         .usage-bar.empty span { color: #ff6666; }
         .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+
+        /* INPUT TABS */
+        .input-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .input-tab { padding: 10px 22px; border-radius: 8px; border: 1px solid #333; background: transparent; color: #aaa; cursor: pointer; font-size: 0.95rem; transition: all 0.3s; }
+        .input-tab.active { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border-color: transparent; }
+
         .input-section { background: #1a1a2e; border-radius: 16px; padding: 30px; margin-bottom: 30px; }
         .input-section h2 { margin-bottom: 20px; color: #667eea; }
         select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #333; background: #0f0f1a; color: #fff; font-size: 1rem; margin-bottom: 20px; }
         textarea { width: 100%; height: 180px; padding: 15px; border-radius: 8px; border: 1px solid #333; background: #0f0f1a; color: #fff; font-size: 1rem; resize: vertical; }
         textarea::placeholder { color: #666; }
+
+        /* URL INPUT */
+        .url-input-wrap { display: none; }
+        .url-input-wrap.active { display: block; }
+        .text-input-wrap { display: block; }
+        .text-input-wrap.hidden { display: none; }
+        .url-box { display: flex; gap: 10px; margin-bottom: 10px; }
+        .url-box input { flex: 1; padding: 14px; border-radius: 8px; border: 1px solid #333; background: #0f0f1a; color: #fff; font-size: 1rem; }
+        .url-box input::placeholder { color: #666; }
+        .btn-fetch { padding: 14px 22px; background: #667eea; border: none; border-radius: 8px; color: #fff; font-size: 0.95rem; cursor: pointer; white-space: nowrap; transition: opacity 0.3s; }
+        .btn-fetch:hover { opacity: 0.85; }
+        .btn-fetch:disabled { opacity: 0.5; cursor: not-allowed; }
+        .fetch-status { font-size: 0.85rem; color: #aaa; margin-bottom: 15px; min-height: 20px; }
+        .fetch-status.success { color: #4ade80; }
+        .fetch-status.error { color: #ff6666; }
+        .fetched-preview { background: #0f0f1a; border-radius: 8px; padding: 14px; border: 1px solid #333; color: #ccc; font-size: 0.88rem; line-height: 1.6; max-height: 120px; overflow-y: auto; display: none; margin-bottom: 10px; }
+
         .platforms { margin: 20px 0; }
         .platforms h3 { color: #667eea; margin-bottom: 12px; font-size: 1rem; }
         .checkbox-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
@@ -42,6 +66,29 @@
         .copy-btn { margin-top: 12px; padding: 8px 18px; background: transparent; border: 1px solid #667eea; border-radius: 6px; color: #667eea; cursor: pointer; font-size: 0.9rem; transition: all 0.3s; }
         .copy-btn:hover { background: #667eea; color: #fff; }
         .error { background: #2d1b1b; border: 1px solid #ff4444; border-radius: 8px; padding: 15px; color: #ff6666; margin-top: 15px; display: none; }
+
+        /* FEEDBACK */
+        .feedback-section { background: #1a1a2e; border-radius: 16px; padding: 28px; margin-bottom: 30px; text-align: center; display: none; }
+        .feedback-section h3 { color: #667eea; margin-bottom: 8px; font-size: 1.1rem; }
+        .feedback-section p { color: #aaa; font-size: 0.9rem; margin-bottom: 18px; }
+        .stars { display: flex; justify-content: center; gap: 10px; margin-bottom: 18px; }
+        .star { font-size: 2rem; cursor: pointer; opacity: 0.4; transition: all 0.2s; }
+        .star:hover, .star.active { opacity: 1; transform: scale(1.15); }
+        .feedback-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #333; background: #0f0f1a; color: #fff; font-size: 0.95rem; resize: none; height: 80px; margin-bottom: 12px; }
+        .feedback-input::placeholder { color: #666; }
+        .btn-feedback { padding: 10px 28px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 8px; color: #fff; font-size: 0.95rem; cursor: pointer; transition: opacity 0.3s; }
+        .btn-feedback:hover { opacity: 0.9; }
+        .feedback-thanks { color: #4ade80; font-weight: 600; display: none; margin-top: 10px; }
+
+        /* COMING SOON */
+        .coming-soon { background: #1a1a2e; border-radius: 16px; padding: 28px; margin-bottom: 30px; }
+        .coming-soon h3 { color: #667eea; margin-bottom: 16px; font-size: 1.1rem; }
+        .roadmap-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .roadmap-item { background: #0f0f1a; border-radius: 10px; padding: 14px; border: 1px solid #333; }
+        .roadmap-item .tag { font-size: 0.75rem; color: #764ba2; font-weight: 600; margin-bottom: 5px; letter-spacing: 0.5px; }
+        .roadmap-item p { font-size: 0.9rem; color: #ccc; }
+
+        /* UPGRADE WALL */
         .upgrade-wall { display: none; background: #1a1a2e; border-radius: 16px; padding: 40px 30px; text-align: center; margin-bottom: 30px; border: 2px solid #667eea; }
         .upgrade-wall .emoji { font-size: 3rem; margin-bottom: 15px; }
         .upgrade-wall h2 { font-size: 1.6rem; margin-bottom: 10px; }
@@ -56,15 +103,15 @@
         .btn-upgrade:hover { opacity: 0.9; }
         .btn-back { background: transparent; border: 1px solid #555; color: #aaa; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; margin-top: 15px; display: block; margin-left: auto; margin-right: auto; }
         .btn-back:hover { border-color: #667eea; color: #fff; }
+
         footer { text-align: center; padding: 30px 20px; color: #555; font-size: 0.85rem; border-top: 1px solid #1a1a2e; margin-top: 40px; }
         footer a { color: #667eea; text-decoration: none; }
     </style>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
     <div class="header">
         <h1>⚡ Repurposer AI</h1>
-        <p>Paste your content — get Twitter, LinkedIn, Instagram & Newsletter instantly</p>
+        <p>Paste text or drop a link — get Twitter, LinkedIn, Instagram & Newsletter instantly</p>
     </div>
 
     <div class="usage-bar" id="usageBar">
@@ -96,15 +143,36 @@
         <!-- MAIN INPUT -->
         <div class="input-section" id="inputSection">
             <h2>📝 Your Content</h2>
-            <select id="contentType">
-                <option value="blog post">Blog Post</option>
-                <option value="YouTube video transcript">YouTube Transcript</option>
-                <option value="podcast notes">Podcast Notes</option>
-                <option value="article">Article</option>
-            </select>
-            <textarea id="contentInput" placeholder="Paste your blog post, YouTube transcript, article, or any content here..."></textarea>
+
+            <!-- TABS -->
+            <div class="input-tabs">
+                <button class="input-tab active" id="tabText" onclick="switchTab('text')">📄 Paste Text</button>
+                <button class="input-tab" id="tabUrl" onclick="switchTab('url')">🔗 Use a Link</button>
+            </div>
+
+            <!-- TEXT INPUT -->
+            <div class="text-input-wrap" id="textWrap">
+                <select id="contentType">
+                    <option value="blog post">Blog Post</option>
+                    <option value="article">Article</option>
+                    <option value="podcast notes">Podcast Notes</option>
+                    <option value="essay">Essay</option>
+                </select>
+                <textarea id="contentInput" placeholder="Paste your blog post, article, or any content here..."></textarea>
+            </div>
+
+            <!-- URL INPUT -->
+            <div class="url-input-wrap" id="urlWrap">
+                <div class="url-box">
+                    <input type="url" id="urlInput" placeholder="https://youtube.com/watch?v=... or any blog/article URL" />
+                    <button class="btn-fetch" id="fetchBtn" onclick="fetchUrl()">Fetch Content</button>
+                </div>
+                <div class="fetch-status" id="fetchStatus"></div>
+                <div class="fetched-preview" id="fetchedPreview"></div>
+            </div>
+
             <div class="platforms">
-                <h3>🎯 Select Platforms to Repurpose For:</h3>
+                <h3>🎯 Select Platforms:</h3>
                 <div class="checkbox-grid">
                     <div class="checkbox-item checked" id="box-twitter">
                         <input type="checkbox" id="twitter" checked>
@@ -124,6 +192,7 @@
                     </div>
                 </div>
             </div>
+
             <button class="btn" onclick="repurpose()" id="repurposeBtn">⚡ Repurpose My Content</button>
             <div class="error" id="errorMsg"></div>
         </div>
@@ -134,6 +203,46 @@
         </div>
 
         <div class="results" id="results"></div>
+
+        <!-- FEEDBACK -->
+        <div class="feedback-section" id="feedbackSection">
+            <h3>💬 How was your experience?</h3>
+            <p>Your feedback helps us improve Repurposer AI</p>
+            <div class="stars" id="stars">
+                <span class="star" onclick="rateStar(1)">★</span>
+                <span class="star" onclick="rateStar(2)">★</span>
+                <span class="star" onclick="rateStar(3)">★</span>
+                <span class="star" onclick="rateStar(4)">★</span>
+                <span class="star" onclick="rateStar(5)">★</span>
+            </div>
+            <textarea class="feedback-input" id="feedbackComment" placeholder="Tell us what you think (optional)..."></textarea>
+            <button class="btn-feedback" onclick="submitFeedback()">Submit Feedback</button>
+            <div class="feedback-thanks" id="feedbackThanks">🎉 Thank you! Your feedback means a lot.</div>
+        </div>
+
+        <!-- COMING SOON ROADMAP -->
+        <div class="coming-soon">
+            <h3>🗺️ What's Coming Next</h3>
+            <div class="roadmap-grid">
+                <div class="roadmap-item">
+                    <div class="tag">COMING SOON</div>
+                    <p>🎙️ Brand Voice — AI learns your unique writing style</p>
+                </div>
+                <div class="roadmap-item">
+                    <div class="tag">COMING SOON</div>
+                    <p>🔑 API Access — Integrate repurposing into your workflow</p>
+                </div>
+                <div class="roadmap-item">
+                    <div class="tag">COMING SOON</div>
+                    <p>⚙️ Settings — Custom tone, length & platform preferences</p>
+                </div>
+                <div class="roadmap-item">
+                    <div class="tag">COMING SOON</div>
+                    <p>🖼️ Instagram Carousels — Visual content generation</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <footer>
@@ -148,6 +257,10 @@
 
     <script>
         const FREE_LIMIT = 3;
+        let selectedRating = 0;
+        let fetchedContent = '';
+        let fetchedType = '';
+        let currentTab = 'text';
 
         function getTodayUsage() {
             const today = new Date().toDateString();
@@ -161,16 +274,63 @@
         }
 
         function setTodayUsage(count) {
-            const today = new Date().toDateString();
-            localStorage.setItem('repurposer_usage', JSON.stringify({ date: today, count }));
+            localStorage.setItem('repurposer_usage', JSON.stringify({ date: new Date().toDateString(), count }));
         }
 
         function updateUsageBar() {
             const used = getTodayUsage();
             const remaining = Math.max(0, FREE_LIMIT - used);
             document.getElementById('usageText').textContent = remaining;
-            if (remaining === 0) {
-                document.getElementById('usageBar').classList.add('empty');
+            if (remaining === 0) document.getElementById('usageBar').classList.add('empty');
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.getElementById('tabText').classList.toggle('active', tab === 'text');
+            document.getElementById('tabUrl').classList.toggle('active', tab === 'url');
+            document.getElementById('textWrap').classList.toggle('hidden', tab !== 'text');
+            document.getElementById('urlWrap').classList.toggle('active', tab === 'url');
+            fetchedContent = '';
+            fetchedType = '';
+            document.getElementById('fetchStatus').textContent = '';
+            document.getElementById('fetchedPreview').style.display = 'none';
+        }
+
+        async function fetchUrl() {
+            const url = document.getElementById('urlInput').value.trim();
+            if (!url) { alert('Please enter a URL!'); return; }
+            const btn = document.getElementById('fetchBtn');
+            const status = document.getElementById('fetchStatus');
+            const preview = document.getElementById('fetchedPreview');
+            btn.disabled = true;
+            btn.textContent = 'Fetching...';
+            status.className = 'fetch-status';
+            status.textContent = '⏳ Extracting content from URL...';
+            preview.style.display = 'none';
+            try {
+                const res = await fetch('/extract-url', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    fetchedContent = data.content;
+                    fetchedType = data.type;
+                    status.className = 'fetch-status success';
+                    status.textContent = '✅ Content extracted! (' + data.type + ')';
+                    preview.textContent = data.content.slice(0, 300) + '...';
+                    preview.style.display = 'block';
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch(err) {
+                status.className = 'fetch-status error';
+                status.textContent = '❌ ' + err.message;
+                fetchedContent = '';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Fetch Content';
             }
         }
 
@@ -179,6 +339,7 @@
             document.getElementById('inputSection').style.display = 'none';
             document.getElementById('results').style.display = 'none';
             document.getElementById('loading').style.display = 'none';
+            document.getElementById('feedbackSection').style.display = 'none';
             setPricing();
         }
 
@@ -202,9 +363,7 @@
 
         document.querySelectorAll('.checkbox-item input').forEach(cb => {
             cb.addEventListener('change', function() {
-                const box = this.closest('.checkbox-item');
-                if (this.checked) box.classList.add('checked');
-                else box.classList.remove('checked');
+                this.closest('.checkbox-item').classList.toggle('checked', this.checked);
             });
         });
 
@@ -212,12 +371,17 @@
             const usageCount = getTodayUsage();
             if (usageCount >= FREE_LIMIT) { showUpgrade(); return; }
 
-            const content = document.getElementById('contentInput').value.trim();
-            const contentType = document.getElementById('contentType').value;
-            const btn = document.getElementById('repurposeBtn');
-            const loading = document.getElementById('loading');
-            const results = document.getElementById('results');
-            const errorMsg = document.getElementById('errorMsg');
+            let content = '';
+            let contentType = '';
+
+            if (currentTab === 'text') {
+                content = document.getElementById('contentInput').value.trim();
+                contentType = document.getElementById('contentType').value;
+            } else {
+                if (!fetchedContent) { alert('Please fetch a URL first!'); return; }
+                content = fetchedContent;
+                contentType = fetchedType;
+            }
 
             const selected = [];
             if (document.getElementById('twitter').checked) selected.push('TWITTER THREAD (5 tweets with numbers and hashtags)');
@@ -228,11 +392,18 @@
             if (!content) { alert('Please paste your content first!'); return; }
             if (selected.length === 0) { alert('Please select at least one platform!'); return; }
 
+            const btn = document.getElementById('repurposeBtn');
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            const errorMsg = document.getElementById('errorMsg');
+            const feedbackSection = document.getElementById('feedbackSection');
+
             btn.disabled = true;
             loading.style.display = 'block';
             results.style.display = 'none';
             results.innerHTML = '';
             errorMsg.style.display = 'none';
+            feedbackSection.style.display = 'none';
 
             try {
                 const response = await fetch('/repurpose', {
@@ -241,14 +412,13 @@
                     body: JSON.stringify({ content, contentType, platforms: selected, usageCount })
                 });
                 const data = await response.json();
-
                 if (data.error === 'limit_exceeded') { showUpgrade(); return; }
-
                 if (data.success) {
                     setTodayUsage(usageCount + 1);
                     updateUsageBar();
                     displayResults(data.repurposed);
                     results.style.display = 'block';
+                    feedbackSection.style.display = 'block';
                 } else {
                     throw new Error(data.error);
                 }
@@ -286,37 +456,50 @@
         }
 
         function copyText(btn) {
-            const text = btn.previousElementSibling.textContent;
-            navigator.clipboard.writeText(text);
+            navigator.clipboard.writeText(btn.previousElementSibling.textContent);
             btn.textContent = 'Copied!';
             setTimeout(() => btn.textContent = 'Copy', 2000);
         }
-// Razorpay Payment
+
+        function rateStar(n) {
+            selectedRating = n;
+            document.querySelectorAll('.star').forEach((s, i) => s.classList.toggle('active', i < n));
+        }
+
+        async function submitFeedback() {
+            const comment = document.getElementById('feedbackComment').value.trim();
+            if (!selectedRating) { alert('Please select a star rating!'); return; }
+            try {
+                await fetch('/feedback', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ rating: selectedRating, comment, page: 'main' })
+                });
+                document.getElementById('feedbackThanks').style.display = 'block';
+                document.querySelector('.btn-feedback').style.display = 'none';
+            } catch(e) {
+                alert('Could not submit feedback. Please try again.');
+            }
+        }
+
         async function startPayment() {
             const btn = document.getElementById('upgradeBtn');
             btn.textContent = 'Loading...';
             btn.style.opacity = '0.7';
-
             try {
-                // Detect currency based on IP
                 let currency = 'INR';
                 try {
                     const ipRes = await fetch('https://ipapi.co/json/');
                     const ipData = await ipRes.json();
                     currency = ipData.country_code === 'IN' ? 'INR' : 'USD';
-                } catch(e) { currency = 'INR'; }
-
-                // Create order
+                } catch(e) {}
                 const orderRes = await fetch('/create-order', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ currency })
                 });
                 const orderData = await orderRes.json();
-
                 if (!orderData.success) throw new Error('Order creation failed');
-
-                // Open Razorpay checkout
                 const options = {
                     key: 'rzp_live_T11lDmNXefzXUk',
                     amount: orderData.order.amount,
@@ -325,18 +508,14 @@
                     description: 'Pro Plan - Unlimited Repurposes',
                     order_id: orderData.order.id,
                     handler: async function(response) {
-                        // Verify payment
                         const verifyRes = await fetch('/verify-payment', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(response)
                         });
                         const verifyData = await verifyRes.json();
-
                         if (verifyData.success) {
-                            // Set Pro access
                             localStorage.setItem('repurposer_pro', 'true');
-                            localStorage.setItem('repurposer_pro_date', new Date().toISOString());
                             alert('🎉 Welcome to Pro! Unlimited repurposes unlocked!');
                             hideUpgrade();
                             updateUsageBar();
@@ -347,10 +526,8 @@
                     prefill: { name: '', email: '', contact: '' },
                     theme: { color: '#667eea' }
                 };
-
                 const rzp = new Razorpay(options);
                 rzp.open();
-
             } catch(err) {
                 alert('Payment failed: ' + err.message);
             } finally {
@@ -358,6 +535,7 @@
                 btn.style.opacity = '1';
             }
         }
+
         // Init
         updateUsageBar();
         if (getTodayUsage() >= FREE_LIMIT) { showUpgrade(); }
