@@ -315,6 +315,19 @@
                 });
                 const data = await res.json();
                 if (data.success) {
+                    if (data.isYoutube) {
+                        status.className = 'fetch-status error';
+                        status.textContent = '⚠️ YouTube direct fetch not supported';
+                        preview.innerHTML = `
+    <strong style="color:#f093fb;">📋 How to get YouTube transcript in 3 steps:</strong><br><br>
+    1️⃣ Open the YouTube video → click <strong>"..."</strong> (3 dots) below the video<br>
+    2️⃣ Click <strong>"Show transcript"</strong><br>
+    3️⃣ Copy the full transcript → switch to <strong>"Paste Text" tab</strong> and paste it<br><br>
+    <span style="color:#aaa;">⚠️ YouTube does not allow direct content fetching. Blog and article links work perfectly!</span>
+`;
+                        preview.style.display = 'block';
+                        return;
+                    }
                     fetchedContent = data.content;
                     fetchedType = data.type;
                     status.className = 'fetch-status success';

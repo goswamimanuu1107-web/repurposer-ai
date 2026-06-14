@@ -24,14 +24,13 @@ async function extractFromUrl(url) {
   const ytRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
   const ytMatch = url.match(ytRegex);
 
-  if (ytMatch) {
-    try {
-      const transcript = await YoutubeTranscript.fetchTranscript(ytMatch[1]);
-      const text = transcript.map(t => t.text).join(' ');
-      return { type: 'YouTube Video', content: text };
-    } catch (e) {
-      throw new Error('YouTube transcript not available for this video. Please paste the text manually.');
-    }
+ if (ytMatch) {
+    return {
+      type: 'YouTube Video',
+      content: '',
+      isYoutube: true,
+      message: 'YouTube videos require manual transcript. Follow steps below to get it.'
+    };
   }
 
   // Blog/URL extraction
