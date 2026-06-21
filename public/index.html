@@ -3,555 +3,328 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Repurposer AI - Turn One Content Into Many</title>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <title>Repurposer AI — Turn One Piece of Content Into Many</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: #0f0f1a; color: #fff; min-height: 100vh; }
-        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; text-align: center; }
-        .header h1 { font-size: 2rem; font-weight: 700; }
-        .header p { opacity: 0.9; margin-top: 5px; }
-        .usage-bar { background: #1a1a2e; padding: 10px 20px; text-align: center; font-size: 0.9rem; color: #aaa; border-bottom: 1px solid #222; }
-        .usage-bar span { color: #667eea; font-weight: 600; }
-        .usage-bar .upgrade-link { color: #f093fb; text-decoration: none; margin-left: 10px; font-weight: 600; }
-        .usage-bar.empty { background: #2d1b1b; }
-        .usage-bar.empty span { color: #ff6666; }
-        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        body { font-family: 'Inter', sans-serif; background: #0a0a12; color: #fff; overflow-x: hidden; }
 
-        /* INPUT TABS */
-        .input-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .input-tab { padding: 10px 22px; border-radius: 8px; border: 1px solid #333; background: transparent; color: #aaa; cursor: pointer; font-size: 0.95rem; transition: all 0.3s; }
-        .input-tab.active { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border-color: transparent; }
+        /* NAV */
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 60px; position: fixed; top: 0; width: 100%; z-index: 100; background: rgba(10,10,18,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .nav-logo { font-size: 1.2rem; font-weight: 800; background: linear-gradient(135deg, #667eea, #f093fb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-links a { color: #aaa; text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
+        .nav-links a:hover { color: #fff; }
+        .nav-cta { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff !important; padding: 10px 22px; border-radius: 8px; font-weight: 600; font-size: 0.9rem !important; }
 
-        .input-section { background: #1a1a2e; border-radius: 16px; padding: 30px; margin-bottom: 30px; }
-        .input-section h2 { margin-bottom: 20px; color: #667eea; }
-        select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #333; background: #0f0f1a; color: #fff; font-size: 1rem; margin-bottom: 20px; }
-        textarea { width: 100%; height: 180px; padding: 15px; border-radius: 8px; border: 1px solid #333; background: #0f0f1a; color: #fff; font-size: 1rem; resize: vertical; }
-        textarea::placeholder { color: #666; }
+        /* HERO */
+        .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 120px 20px 80px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, rgba(102,126,234,0.15) 0%, transparent 70%); top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(102,126,234,0.15); border: 1px solid rgba(102,126,234,0.3); padding: 8px 18px; border-radius: 100px; font-size: 0.85rem; color: #a5b4fc; margin-bottom: 30px; }
+        .hero-badge span { width: 8px; height: 8px; background: #667eea; border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+        .hero h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; line-height: 1.1; margin-bottom: 24px; letter-spacing: -0.02em; }
+        .hero h1 .gradient { background: linear-gradient(135deg, #667eea 0%, #f093fb 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 1.2rem; color: #888; max-width: 560px; line-height: 1.7; margin-bottom: 40px; }
+        .hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .btn-primary { padding: 16px 36px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 10px; color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer; text-decoration: none; transition: all 0.3s; box-shadow: 0 4px 30px rgba(102,126,234,0.4); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(102,126,234,0.5); }
+        .btn-secondary { padding: 16px 36px; background: transparent; border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; color: #ccc; font-size: 1rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.3s; }
+        .btn-secondary:hover { border-color: #667eea; color: #fff; }
+        .hero-stats { display: flex; gap: 50px; margin-top: 70px; justify-content: center; flex-wrap: wrap; }
+        .stat { text-align: center; }
+        .stat-num { font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, #667eea, #f093fb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-label { font-size: 0.85rem; color: #666; margin-top: 4px; }
 
-        /* URL INPUT */
-        .url-input-wrap { display: none; }
-        .url-input-wrap.active { display: block; }
-        .text-input-wrap { display: block; }
-        .text-input-wrap.hidden { display: none; }
-        .url-box { display: flex; gap: 10px; margin-bottom: 10px; }
-        .url-box input { flex: 1; padding: 14px; border-radius: 8px; border: 1px solid #333; background: #0f0f1a; color: #fff; font-size: 1rem; }
-        .url-box input::placeholder { color: #666; }
-        .btn-fetch { padding: 14px 22px; background: #667eea; border: none; border-radius: 8px; color: #fff; font-size: 0.95rem; cursor: pointer; white-space: nowrap; transition: opacity 0.3s; }
-        .btn-fetch:hover { opacity: 0.85; }
-        .btn-fetch:disabled { opacity: 0.5; cursor: not-allowed; }
-        .fetch-status { font-size: 0.85rem; color: #aaa; margin-bottom: 15px; min-height: 20px; }
-        .fetch-status.success { color: #4ade80; }
-        .fetch-status.error { color: #ff6666; }
-        .fetched-preview { background: #0f0f1a; border-radius: 8px; padding: 14px; border: 1px solid #333; color: #ccc; font-size: 0.88rem; line-height: 1.6; max-height: 120px; overflow-y: auto; display: none; margin-bottom: 10px; }
+        /* DEMO STRIP */
+        .demo-strip { background: #0f0f1a; padding: 20px 60px; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); overflow: hidden; }
+        .demo-strip-inner { display: flex; gap: 40px; animation: scroll 20s linear infinite; width: max-content; }
+        @keyframes scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+        .demo-strip span { color: #555; font-size: 0.9rem; white-space: nowrap; }
+        .demo-strip span strong { color: #667eea; }
 
-        .platforms { margin: 20px 0; }
-        .platforms h3 { color: #667eea; margin-bottom: 12px; font-size: 1rem; }
-        .checkbox-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .checkbox-item { display: flex; align-items: center; gap: 10px; background: #0f0f1a; padding: 12px 16px; border-radius: 10px; border: 1px solid #333; cursor: pointer; transition: all 0.3s; }
-        .checkbox-item:hover { border-color: #667eea; }
-        .checkbox-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: #667eea; cursor: pointer; }
-        .checkbox-item label { cursor: pointer; font-size: 0.95rem; }
-        .checkbox-item.checked { border-color: #667eea; background: #1a1a3e; }
-        .btn { width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 8px; color: #fff; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 15px; transition: opacity 0.3s; }
-        .btn:hover { opacity: 0.9; }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .loading { text-align: center; padding: 40px; display: none; }
-        .spinner { width: 50px; height: 50px; border: 4px solid #333; border-top: 4px solid #667eea; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .results { display: none; }
-        .result-card { background: #1a1a2e; border-radius: 16px; padding: 25px; margin-bottom: 20px; border-left: 4px solid #667eea; }
-        .result-card h3 { color: #667eea; margin-bottom: 15px; font-size: 1.1rem; }
-        .result-content { white-space: pre-wrap; line-height: 1.7; color: #ddd; }
-        .copy-btn { margin-top: 12px; padding: 8px 18px; background: transparent; border: 1px solid #667eea; border-radius: 6px; color: #667eea; cursor: pointer; font-size: 0.9rem; transition: all 0.3s; }
-        .copy-btn:hover { background: #667eea; color: #fff; }
-        .error { background: #2d1b1b; border: 1px solid #ff4444; border-radius: 8px; padding: 15px; color: #ff6666; margin-top: 15px; display: none; }
+        /* HOW IT WORKS */
+        .section { padding: 100px 60px; max-width: 1100px; margin: 0 auto; }
+        .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 2px; color: #667eea; text-transform: uppercase; margin-bottom: 16px; }
+        .section-title { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 16px; line-height: 1.2; }
+        .section-sub { color: #777; font-size: 1.05rem; max-width: 500px; line-height: 1.7; margin-bottom: 60px; }
+        .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        .step { background: #111120; border-radius: 16px; padding: 32px; border: 1px solid rgba(255,255,255,0.06); position: relative; transition: all 0.3s; }
+        .step:hover { border-color: rgba(102,126,234,0.3); transform: translateY(-4px); }
+        .step-num { font-size: 3rem; font-weight: 900; background: linear-gradient(135deg, rgba(102,126,234,0.3), rgba(240,147,251,0.3)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 16px; }
+        .step h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; }
+        .step p { color: #777; font-size: 0.92rem; line-height: 1.7; }
+        .step-icon { width: 52px; height: 52px; border-radius: 14px; background: linear-gradient(135deg, rgba(102,126,234,0.2), rgba(118,75,162,0.2)); border: 1px solid rgba(102,126,234,0.3); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 20px; }
 
-        /* FEEDBACK */
-        .feedback-section { background: #1a1a2e; border-radius: 16px; padding: 28px; margin-bottom: 30px; text-align: center; display: none; }
-        .feedback-section h3 { color: #667eea; margin-bottom: 8px; font-size: 1.1rem; }
-        .feedback-section p { color: #aaa; font-size: 0.9rem; margin-bottom: 18px; }
-        .stars { display: flex; justify-content: center; gap: 10px; margin-bottom: 18px; }
-        .star { font-size: 2rem; cursor: pointer; opacity: 0.4; transition: all 0.2s; }
-        .star:hover, .star.active { opacity: 1; transform: scale(1.15); }
-        .feedback-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #333; background: #0f0f1a; color: #fff; font-size: 0.95rem; resize: none; height: 80px; margin-bottom: 12px; }
-        .feedback-input::placeholder { color: #666; }
-        .btn-feedback { padding: 10px 28px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 8px; color: #fff; font-size: 0.95rem; cursor: pointer; transition: opacity 0.3s; }
-        .btn-feedback:hover { opacity: 0.9; }
-        .feedback-thanks { color: #4ade80; font-weight: 600; display: none; margin-top: 10px; }
+        /* PLATFORMS */
+        .platforms-section { background: #0d0d1a; padding: 100px 0; }
+        .platforms-inner { max-width: 1100px; margin: 0 auto; padding: 0 60px; }
+        .platforms-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 60px; }
+        .platform-card { background: #111120; border-radius: 16px; padding: 28px; border: 1px solid rgba(255,255,255,0.06); display: flex; gap: 20px; align-items: flex-start; transition: all 0.3s; }
+        .platform-card:hover { border-color: rgba(102,126,234,0.3); }
+        .platform-icon { font-size: 2.2rem; flex-shrink: 0; }
+        .platform-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+        .platform-card p { color: #777; font-size: 0.88rem; line-height: 1.6; }
 
-        /* COMING SOON */
-        .coming-soon { background: #1a1a2e; border-radius: 16px; padding: 28px; margin-bottom: 30px; }
-        .coming-soon h3 { color: #667eea; margin-bottom: 16px; font-size: 1.1rem; }
-        .roadmap-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .roadmap-item { background: #0f0f1a; border-radius: 10px; padding: 14px; border: 1px solid #333; }
-        .roadmap-item .tag { font-size: 0.75rem; color: #764ba2; font-weight: 600; margin-bottom: 5px; letter-spacing: 0.5px; }
-        .roadmap-item p { font-size: 0.9rem; color: #ccc; }
+        /* PRICING */
+        .pricing-section { padding: 100px 60px; max-width: 900px; margin: 0 auto; text-align: center; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 60px; }
+        .pricing-card { background: #111120; border-radius: 20px; padding: 36px; border: 1px solid rgba(255,255,255,0.08); text-align: left; transition: all 0.3s; }
+        .pricing-card.popular { border-color: #667eea; position: relative; }
+        .popular-badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; padding: 4px 16px; border-radius: 100px; font-size: 0.75rem; font-weight: 700; white-space: nowrap; }
+        .pricing-card h3 { font-size: 1rem; font-weight: 600; color: #aaa; margin-bottom: 12px; }
+        .price { font-size: 2.8rem; font-weight: 900; margin-bottom: 6px; }
+        .price span { font-size: 1rem; color: #666; font-weight: 400; }
+        .price-note { font-size: 0.82rem; color: #555; margin-bottom: 28px; }
+        .pricing-features { list-style: none; margin-bottom: 28px; }
+        .pricing-features li { padding: 8px 0; font-size: 0.92rem; color: #bbb; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; align-items: center; gap: 10px; }
+        .pricing-features li::before { content: '✓'; color: #667eea; font-weight: 700; }
+        .btn-plan { width: 100%; padding: 14px; border-radius: 10px; font-size: 0.95rem; font-weight: 700; cursor: pointer; text-decoration: none; display: block; text-align: center; transition: all 0.3s; }
+        .btn-plan-free { background: transparent; border: 1px solid rgba(255,255,255,0.15); color: #ccc; }
+        .btn-plan-free:hover { border-color: #667eea; color: #fff; }
+        .btn-plan-pro { background: linear-gradient(135deg, #667eea, #764ba2); border: none; color: #fff; box-shadow: 0 4px 20px rgba(102,126,234,0.3); }
+        .btn-plan-pro:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(102,126,234,0.4); }
 
-        /* UPGRADE WALL */
-        .upgrade-wall { display: none; background: #1a1a2e; border-radius: 16px; padding: 40px 30px; text-align: center; margin-bottom: 30px; border: 2px solid #667eea; }
-        .upgrade-wall .emoji { font-size: 3rem; margin-bottom: 15px; }
-        .upgrade-wall h2 { font-size: 1.6rem; margin-bottom: 10px; }
-        .upgrade-wall p { color: #aaa; margin-bottom: 25px; line-height: 1.6; }
-        .plan-card { background: #0f0f1a; border-radius: 12px; padding: 25px; border: 2px solid #667eea; max-width: 320px; margin: 0 auto 25px; }
-        .plan-card h3 { font-size: 1.2rem; margin-bottom: 10px; }
-        .plan-price { font-size: 2rem; font-weight: 700; color: #667eea; margin-bottom: 15px; }
-        .plan-card ul { list-style: none; color: #aaa; font-size: 0.95rem; text-align: left; }
-        .plan-card ul li { padding: 5px 0; }
-        .plan-card ul li::before { content: '✓ '; color: #667eea; }
-        .btn-upgrade { display: inline-block; padding: 14px 35px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 8px; color: #fff; font-size: 1rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: opacity 0.3s; }
-        .btn-upgrade:hover { opacity: 0.9; }
-        .btn-back { background: transparent; border: 1px solid #555; color: #aaa; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; margin-top: 15px; display: block; margin-left: auto; margin-right: auto; }
-        .btn-back:hover { border-color: #667eea; color: #fff; }
+        /* CTA SECTION */
+        .cta-section { margin: 0 60px 100px; background: linear-gradient(135deg, rgba(102,126,234,0.15), rgba(118,75,162,0.15)); border: 1px solid rgba(102,126,234,0.2); border-radius: 24px; padding: 80px 60px; text-align: center; }
+        .cta-section h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 16px; }
+        .cta-section p { color: #888; font-size: 1.05rem; margin-bottom: 36px; }
 
-        footer { text-align: center; padding: 30px 20px; color: #555; font-size: 0.85rem; border-top: 1px solid #1a1a2e; margin-top: 40px; }
-        footer a { color: #667eea; text-decoration: none; }
+        /* FOOTER */
+        footer { border-top: 1px solid rgba(255,255,255,0.06); padding: 40px 60px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+        .footer-logo { font-size: 1rem; font-weight: 800; background: linear-gradient(135deg, #667eea, #f093fb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .footer-links { display: flex; gap: 24px; }
+        .footer-links a { color: #555; text-decoration: none; font-size: 0.85rem; transition: color 0.3s; }
+        .footer-links a:hover { color: #fff; }
+        .footer-copy { color: #444; font-size: 0.82rem; }
+
+        @media(max-width: 768px) {
+            nav { padding: 16px 20px; }
+            .nav-links { display: none; }
+            .hero { padding: 100px 20px 60px; }
+            .section { padding: 60px 20px; }
+            .steps { grid-template-columns: 1fr; }
+            .platforms-grid { grid-template-columns: 1fr; }
+            .pricing-grid { grid-template-columns: 1fr; }
+            .pricing-section { padding: 60px 20px; }
+            .cta-section { margin: 0 20px 60px; padding: 50px 24px; }
+            .demo-strip { padding: 20px; }
+            footer { padding: 30px 20px; flex-direction: column; text-align: center; }
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>⚡ Repurposer AI</h1>
-        <p>Paste text or drop a link — get Twitter, LinkedIn, Instagram & Newsletter instantly</p>
+
+    <!-- NAV -->
+    <nav>
+        <div class="nav-logo">⚡ Repurposer AI</div>
+        <div class="nav-links">
+            <a href="#how">How it works</a>
+            <a href="#platforms">Platforms</a>
+            <a href="#pricing">Pricing</a>
+            <a href="/app" class="nav-cta">Try Free →</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-badge">
+            <span></span> MVP Launch — Free to try
+        </div>
+        <h1>
+            One piece of content.<br>
+            <span class="gradient">Every platform. Instantly.</span>
+        </h1>
+        <p>Paste any blog post or article link — Repurposer AI turns it into Twitter threads, LinkedIn posts, Instagram captions and newsletters in seconds.</p>
+        <div class="hero-btns">
+            <a href="/app" class="btn-primary">⚡ Try for Free</a>
+            <a href="#how" class="btn-secondary">See how it works</a>
+        </div>
+        <div class="hero-stats">
+            <div class="stat">
+                <div class="stat-num">4x</div>
+                <div class="stat-label">More content output</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">10s</div>
+                <div class="stat-label">Average repurpose time</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">Free</div>
+                <div class="stat-label">To get started</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DEMO STRIP -->
+    <div class="demo-strip">
+        <div class="demo-strip-inner">
+            <span>Blog Post → <strong>Twitter Thread</strong></span>
+            <span>•</span>
+            <span>Article → <strong>LinkedIn Post</strong></span>
+            <span>•</span>
+            <span>Blog Post → <strong>Instagram Caption</strong></span>
+            <span>•</span>
+            <span>Any Content → <strong>Newsletter</strong></span>
+            <span>•</span>
+            <span>URL → <strong>All Platforms</strong></span>
+            <span>•</span>
+            <span>Blog Post → <strong>Twitter Thread</strong></span>
+            <span>•</span>
+            <span>Article → <strong>LinkedIn Post</strong></span>
+            <span>•</span>
+            <span>Blog Post → <strong>Instagram Caption</strong></span>
+            <span>•</span>
+            <span>Any Content → <strong>Newsletter</strong></span>
+            <span>•</span>
+            <span>URL → <strong>All Platforms</strong></span>
+        </div>
     </div>
 
-    <div class="usage-bar" id="usageBar">
-        Free plan: <span id="usageText">3</span> repurposes remaining today
-        <a href="#" class="upgrade-link" onclick="showUpgrade(); return false;">⚡ Upgrade to Pro</a>
+    <!-- HOW IT WORKS -->
+    <div id="how">
+        <div class="section">
+            <div class="section-label">How it works</div>
+            <h2 class="section-title">3 steps. Done in seconds.</h2>
+            <p class="section-sub">No learning curve. No complex setup. Just paste and get results.</p>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-icon">📄</div>
+                    <div class="step-num">01</div>
+                    <h3>Paste your content</h3>
+                    <p>Paste any blog post, article text, or drop a URL directly. We extract the content automatically.</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon">🎯</div>
+                    <div class="step-num">02</div>
+                    <h3>Choose your platforms</h3>
+                    <p>Select which platforms you want — Twitter, LinkedIn, Instagram, Newsletter — or all of them.</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon">⚡</div>
+                    <div class="step-num">03</div>
+                    <h3>Get your content</h3>
+                    <p>AI generates platform-optimized content in seconds. Copy and post — you're done.</p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="container">
-
-        <!-- UPGRADE WALL -->
-        <div class="upgrade-wall" id="upgradeWall">
-            <div class="emoji">🚀</div>
-            <h2>You've used all 3 free repurposes today!</h2>
-            <p>Upgrade to Pro for unlimited repurposes, faster processing, and priority support.<br>Free limit resets every day at midnight.</p>
-            <div class="plan-card">
-                <h3>⚡ Pro Plan</h3>
-                <div class="plan-price" id="planPrice">Loading...</div>
-                <ul>
-                    <li>Unlimited repurposes</li>
-                    <li>All 4 platforms</li>
-                    <li>Priority processing</li>
-                    <li>Cancel anytime</li>
-                </ul>
-            </div>
-            <a href="#" class="btn-upgrade" id="upgradeBtn" onclick="startPayment(); return false;">⚡ Upgrade to Pro</a>
-            <button class="btn-back" onclick="hideUpgrade()">← Go back</button>
-        </div>
-
-        <!-- MAIN INPUT -->
-        <div class="input-section" id="inputSection">
-            <h2>📝 Your Content</h2>
-
-            <!-- TABS -->
-            <div class="input-tabs">
-                <button class="input-tab active" id="tabText" onclick="switchTab('text')">📄 Paste Text</button>
-                <button class="input-tab" id="tabUrl" onclick="switchTab('url')">🔗 Use a Link</button>
-            </div>
-
-            <!-- TEXT INPUT -->
-            <div class="text-input-wrap" id="textWrap">
-                <select id="contentType">
-                    <option value="blog post">Blog Post</option>
-                    <option value="article">Article</option>
-                    <option value="podcast notes">Podcast Notes</option>
-                    <option value="essay">Essay</option>
-                </select>
-                <textarea id="contentInput" placeholder="Paste your blog post, article, or any content here..."></textarea>
-            </div>
-
-            <!-- URL INPUT -->
-            <div class="url-input-wrap" id="urlWrap">
-                <div class="url-box">
-                    <input type="url" id="urlInput" placeholder="https://youtube.com/watch?v=... or any blog/article URL" />
-                    <button class="btn-fetch" id="fetchBtn" onclick="fetchUrl()">Fetch Content</button>
+    <!-- PLATFORMS -->
+    <div id="platforms" class="platforms-section">
+        <div class="platforms-inner">
+            <div class="section-label">Platforms</div>
+            <h2 class="section-title">Built for every platform you use.</h2>
+            <p class="section-sub">Each format is crafted for that platform's unique style and audience.</p>
+            <div class="platforms-grid">
+                <div class="platform-card">
+                    <div class="platform-icon">🐦</div>
+                    <div>
+                        <h3>Twitter Thread</h3>
+                        <p>5-tweet threads with hooks, numbered structure, and hashtags — optimized for maximum engagement and retweets.</p>
+                    </div>
                 </div>
-                <div class="fetch-status" id="fetchStatus"></div>
-                <div class="fetched-preview" id="fetchedPreview"></div>
-            </div>
-
-            <div class="platforms">
-                <h3>🎯 Select Platforms:</h3>
-                <div class="checkbox-grid">
-                    <div class="checkbox-item checked" id="box-twitter">
-                        <input type="checkbox" id="twitter" checked>
-                        <label for="twitter">🐦 Twitter Thread</label>
+                <div class="platform-card">
+                    <div class="platform-icon">💼</div>
+                    <div>
+                        <h3>LinkedIn Post</h3>
+                        <p>Professional 150-word posts with a strong opening line and a clear call to action for your network.</p>
                     </div>
-                    <div class="checkbox-item checked" id="box-linkedin">
-                        <input type="checkbox" id="linkedin" checked>
-                        <label for="linkedin">💼 LinkedIn Post</label>
+                </div>
+                <div class="platform-card">
+                    <div class="platform-icon">📸</div>
+                    <div>
+                        <h3>Instagram Caption</h3>
+                        <p>Engaging captions with relevant hashtags designed to drive saves, shares, and profile visits.</p>
                     </div>
-                    <div class="checkbox-item checked" id="box-instagram">
-                        <input type="checkbox" id="instagram" checked>
-                        <label for="instagram">📸 Instagram Caption</label>
-                    </div>
-                    <div class="checkbox-item checked" id="box-newsletter">
-                        <input type="checkbox" id="newsletter" checked>
-                        <label for="newsletter">📧 Newsletter</label>
+                </div>
+                <div class="platform-card">
+                    <div class="platform-icon">📧</div>
+                    <div>
+                        <h3>Newsletter Section</h3>
+                        <p>200-word newsletter-ready content with a conversational tone perfect for your email subscribers.</p>
                     </div>
                 </div>
             </div>
-
-            <button class="btn" onclick="repurpose()" id="repurposeBtn">⚡ Repurpose My Content</button>
-            <div class="error" id="errorMsg"></div>
         </div>
-
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p>AI is repurposing your content...</p>
-        </div>
-
-        <div class="results" id="results"></div>
-
-        <!-- FEEDBACK -->
-        <div class="feedback-section" id="feedbackSection">
-            <h3>💬 How was your experience?</h3>
-            <p>Your feedback helps us improve Repurposer AI</p>
-            <div class="stars" id="stars">
-                <span class="star" onclick="rateStar(1)">★</span>
-                <span class="star" onclick="rateStar(2)">★</span>
-                <span class="star" onclick="rateStar(3)">★</span>
-                <span class="star" onclick="rateStar(4)">★</span>
-                <span class="star" onclick="rateStar(5)">★</span>
-            </div>
-            <textarea class="feedback-input" id="feedbackComment" placeholder="Tell us what you think (optional)..."></textarea>
-            <button class="btn-feedback" onclick="submitFeedback()">Submit Feedback</button>
-            <div class="feedback-thanks" id="feedbackThanks">🎉 Thank you! Your feedback means a lot.</div>
-        </div>
-
-        <!-- COMING SOON ROADMAP -->
-        <div class="coming-soon">
-            <h3>🗺️ What's Coming Next</h3>
-            <div class="roadmap-grid">
-                <div class="roadmap-item">
-                    <div class="tag">COMING SOON</div>
-                    <p>🎙️ Brand Voice — AI learns your unique writing style</p>
-                </div>
-                <div class="roadmap-item">
-                    <div class="tag">COMING SOON</div>
-                    <p>🔑 API Access — Integrate repurposing into your workflow</p>
-                </div>
-                <div class="roadmap-item">
-                    <div class="tag">COMING SOON</div>
-                    <p>⚙️ Settings — Custom tone, length & platform preferences</p>
-                </div>
-                <div class="roadmap-item">
-                    <div class="tag">COMING SOON</div>
-                    <p>🖼️ Instagram Carousels — Visual content generation</p>
-                </div>
-            </div>
-        </div>
-
     </div>
 
+    <!-- PRICING -->
+    <div id="pricing">
+        <div class="pricing-section">
+            <div class="section-label">Pricing</div>
+            <h2 class="section-title">Simple, honest pricing.</h2>
+            <p class="section-sub" style="margin: 0 auto 0; text-align:center;">Start free. Upgrade when you need more.</p>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Free Plan</h3>
+                    <div class="price">₹0 <span>/ forever</span></div>
+                    <div class="price-note">No credit card required</div>
+                    <ul class="pricing-features">
+                        <li>3 repurposes per day</li>
+                        <li>All 4 platforms</li>
+                        <li>Blog & article URL support</li>
+                        <li>Copy to clipboard</li>
+                    </ul>
+                    <a href="/app" class="btn-plan btn-plan-free">Get Started Free</a>
+                </div>
+                <div class="pricing-card popular">
+                    <div class="popular-badge">⭐ Most Popular</div>
+                    <h3>Pro Plan</h3>
+                    <div class="price" id="landingPrice">₹199 <span>/ month</span></div>
+                    <div class="price-note">Cancel anytime</div>
+                    <ul class="pricing-features">
+                        <li>Unlimited repurposes</li>
+                        <li>All 4 platforms</li>
+                        <li>Priority processing</li>
+                        <li>Blog & article URL support</li>
+                        <li>Cancel anytime</li>
+                    </ul>
+                    <a href="/app" class="btn-plan btn-plan-pro">⚡ Upgrade to Pro</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+        <h2>Start repurposing your content today.</h2>
+        <p>Free forever plan. No credit card. No signup required.</p>
+        <a href="/app" class="btn-primary">⚡ Try Repurposer AI Free</a>
+    </div>
+
+    <!-- FOOTER -->
     <footer>
-        <p>⚡ Repurposer AI — Turn one content into many</p>
-        <p style="margin-top: 8px;">
+        <div class="footer-logo">⚡ Repurposer AI</div>
+        <div class="footer-links">
             <a href="/legal.html">Privacy Policy</a>
-            &nbsp;•&nbsp;
             <a href="/legal.html">Terms of Service</a>
-        </p>
-        <p style="margin-top: 8px;">© 2026 Repurposer AI. All rights reserved.</p>
+            <a href="mailto:repurposerai@gmail.com">Support</a>
+        </div>
+        <div class="footer-copy">© 2026 Repurposer AI. All rights reserved.</div>
     </footer>
 
     <script>
-        const FREE_LIMIT = 3;
-        let selectedRating = 0;
-        let fetchedContent = '';
-        let fetchedType = '';
-        let currentTab = 'text';
-
-        function getTodayUsage() {
-            const today = new Date().toDateString();
-            try {
-                const stored = localStorage.getItem('repurposer_usage');
-                if (!stored) return 0;
-                const data = JSON.parse(stored);
-                if (data.date !== today) return 0;
-                return data.count || 0;
-            } catch(e) { return 0; }
-        }
-
-        function setTodayUsage(count) {
-            localStorage.setItem('repurposer_usage', JSON.stringify({ date: new Date().toDateString(), count }));
-        }
-
-        function updateUsageBar() {
-            const used = getTodayUsage();
-            const remaining = Math.max(0, FREE_LIMIT - used);
-            document.getElementById('usageText').textContent = remaining;
-            if (remaining === 0) document.getElementById('usageBar').classList.add('empty');
-        }
-
-        function switchTab(tab) {
-            currentTab = tab;
-            document.getElementById('tabText').classList.toggle('active', tab === 'text');
-            document.getElementById('tabUrl').classList.toggle('active', tab === 'url');
-            document.getElementById('textWrap').classList.toggle('hidden', tab !== 'text');
-            document.getElementById('urlWrap').classList.toggle('active', tab === 'url');
-            fetchedContent = '';
-            fetchedType = '';
-            document.getElementById('fetchStatus').textContent = '';
-            document.getElementById('fetchedPreview').style.display = 'none';
-        }
-
-        async function fetchUrl() {
-            const url = document.getElementById('urlInput').value.trim();
-            if (!url) { alert('Please enter a URL!'); return; }
-            const btn = document.getElementById('fetchBtn');
-            const status = document.getElementById('fetchStatus');
-            const preview = document.getElementById('fetchedPreview');
-            btn.disabled = true;
-            btn.textContent = 'Fetching...';
-            status.className = 'fetch-status';
-            status.textContent = '⏳ Extracting content from URL...';
-            preview.style.display = 'none';
-            try {
-                const res = await fetch('/extract-url', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ url })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    if (data.isYoutube) {
-                        status.className = 'fetch-status error';
-                        status.textContent = '⚠️ YouTube direct fetch not supported';
-                        preview.innerHTML = `
-    <span style="color:#aaa;">⚠️ YouTube does not allow direct content fetching. Blog and article links work perfectly!</span><br><br>
-<strong style="color:#f093fb;">📋 Instead, you can use YouTube Transcripts. Here's how to get it in 3 steps:</strong><br><br>
-    1️⃣ Open the YouTube video → click <strong>"..."</strong> (3 dots) below the video<br>
-    2️⃣ Click <strong>"Show transcript"</strong><br>
-    3️⃣ Copy the full transcript → switch to <strong>"Paste Text" tab</strong> and paste it<br><br>
-`;
-                        preview.style.display = 'block';
-                        return;
-                    }
-                    fetchedContent = data.content;
-                    fetchedType = data.type;
-                    status.className = 'fetch-status success';
-                    status.textContent = '✅ Content extracted! (' + data.type + ')';
-                    preview.textContent = data.content.slice(0, 300) + '...';
-                    preview.style.display = 'block';
-                } else {
-                    throw new Error(data.error);
-                }
-            } catch(err) {
-                status.className = 'fetch-status error';
-                status.textContent = '❌ ' + err.message;
-                fetchedContent = '';
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Fetch Content';
-            }
-        }
-
-        function showUpgrade() {
-            document.getElementById('upgradeWall').style.display = 'block';
-            document.getElementById('inputSection').style.display = 'none';
-            document.getElementById('results').style.display = 'none';
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('feedbackSection').style.display = 'none';
-            setPricing();
-        }
-
-        function hideUpgrade() {
-            document.getElementById('upgradeWall').style.display = 'none';
-            document.getElementById('inputSection').style.display = 'block';
-        }
-
-        async function setPricing() {
+        // Geo-based pricing on landing page
+        async function setLandingPrice() {
             try {
                 const res = await fetch('https://ipapi.co/json/');
                 const data = await res.json();
                 const isIndia = data.country_code === 'IN';
-                document.getElementById('planPrice').innerHTML = isIndia
-                    ? '₹199 <span style="font-size:0.9rem;color:#aaa;font-weight:400;">/month</span>'
-                    : '$5 <span style="font-size:0.9rem;color:#aaa;font-weight:400;">/month</span>';
-            } catch(e) {
-                document.getElementById('planPrice').innerHTML = '$5 <span style="font-size:0.9rem;color:#aaa;font-weight:400;">/month</span>';
-            }
+                document.getElementById('landingPrice').innerHTML = isIndia
+                    ? '₹199 <span>/ month</span>'
+                    : '$5 <span>/ month</span>';
+            } catch(e) {}
         }
+        setLandingPrice();
 
-        document.querySelectorAll('.checkbox-item input').forEach(cb => {
-            cb.addEventListener('change', function() {
-                this.closest('.checkbox-item').classList.toggle('checked', this.checked);
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
             });
         });
-
-        async function repurpose() {
-            const usageCount = getTodayUsage();
-            if (usageCount >= FREE_LIMIT) { showUpgrade(); return; }
-
-            let content = '';
-            let contentType = '';
-
-            if (currentTab === 'text') {
-                content = document.getElementById('contentInput').value.trim();
-                contentType = document.getElementById('contentType').value;
-            } else {
-                if (!fetchedContent) { alert('Please fetch a URL first!'); return; }
-                content = fetchedContent;
-                contentType = fetchedType;
-            }
-
-            const selected = [];
-            if (document.getElementById('twitter').checked) selected.push('TWITTER THREAD (5 tweets with numbers and hashtags)');
-            if (document.getElementById('linkedin').checked) selected.push('LINKEDIN POST (professional tone, 150 words)');
-            if (document.getElementById('instagram').checked) selected.push('INSTAGRAM CAPTION (engaging, with hashtags)');
-            if (document.getElementById('newsletter').checked) selected.push('NEWSLETTER SECTION (200 words)');
-
-            if (!content) { alert('Please paste your content first!'); return; }
-            if (selected.length === 0) { alert('Please select at least one platform!'); return; }
-
-            const btn = document.getElementById('repurposeBtn');
-            const loading = document.getElementById('loading');
-            const results = document.getElementById('results');
-            const errorMsg = document.getElementById('errorMsg');
-            const feedbackSection = document.getElementById('feedbackSection');
-
-            btn.disabled = true;
-            loading.style.display = 'block';
-            results.style.display = 'none';
-            results.innerHTML = '';
-            errorMsg.style.display = 'none';
-            feedbackSection.style.display = 'none';
-
-            try {
-                const response = await fetch('/repurpose', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ content, contentType, platforms: selected, usageCount })
-                });
-                const data = await response.json();
-                if (data.error === 'limit_exceeded') { showUpgrade(); return; }
-                if (data.success) {
-                    setTodayUsage(usageCount + 1);
-                    updateUsageBar();
-                    displayResults(data.repurposed);
-                    results.style.display = 'block';
-                    feedbackSection.style.display = 'block';
-                } else {
-                    throw new Error(data.error);
-                }
-            } catch (err) {
-                errorMsg.textContent = 'Error: ' + err.message;
-                errorMsg.style.display = 'block';
-            } finally {
-                btn.disabled = false;
-                loading.style.display = 'none';
-            }
-        }
-
-        function displayResults(text) {
-            const results = document.getElementById('results');
-            const icons = { 'TWITTER': '🐦', 'LINKEDIN': '💼', 'INSTAGRAM': '📸', 'NEWSLETTER': '📧' };
-            const labels = { 'TWITTER': 'Twitter Thread', 'LINKEDIN': 'LinkedIn Post', 'INSTAGRAM': 'Instagram Caption', 'NEWSLETTER': 'Newsletter Section' };
-            const lines = text.split('\n');
-            let sections = {}, current = '';
-            for (const line of lines) {
-                const l = line.toUpperCase();
-                if (l.includes('TWITTER')) current = 'TWITTER';
-                else if (l.includes('LINKEDIN')) current = 'LINKEDIN';
-                else if (l.includes('INSTAGRAM')) current = 'INSTAGRAM';
-                else if (l.includes('NEWSLETTER')) current = 'NEWSLETTER';
-                else if (current) sections[current] = (sections[current] || '') + line + '\n';
-            }
-            ['TWITTER','LINKEDIN','INSTAGRAM','NEWSLETTER'].forEach(key => {
-                if (sections[key]) {
-                    const card = document.createElement('div');
-                    card.className = 'result-card';
-                    card.innerHTML = `<h3>${icons[key]} ${labels[key]}</h3><div class="result-content">${sections[key].trim()}</div><button class="copy-btn" onclick="copyText(this)">Copy</button>`;
-                    results.appendChild(card);
-                }
-            });
-        }
-
-        function copyText(btn) {
-            navigator.clipboard.writeText(btn.previousElementSibling.textContent);
-            btn.textContent = 'Copied!';
-            setTimeout(() => btn.textContent = 'Copy', 2000);
-        }
-
-        function rateStar(n) {
-            selectedRating = n;
-            document.querySelectorAll('.star').forEach((s, i) => s.classList.toggle('active', i < n));
-        }
-
-        async function submitFeedback() {
-            const comment = document.getElementById('feedbackComment').value.trim();
-            if (!selectedRating) { alert('Please select a star rating!'); return; }
-            try {
-                await fetch('/feedback', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ rating: selectedRating, comment, page: 'main' })
-                });
-                document.getElementById('feedbackThanks').style.display = 'block';
-                document.querySelector('.btn-feedback').style.display = 'none';
-            } catch(e) {
-                alert('Could not submit feedback. Please try again.');
-            }
-        }
-
-        async function startPayment() {
-            const btn = document.getElementById('upgradeBtn');
-            btn.textContent = 'Loading...';
-            btn.style.opacity = '0.7';
-            try {
-                let currency = 'INR';
-                try {
-                    const ipRes = await fetch('https://ipapi.co/json/');
-                    const ipData = await ipRes.json();
-                    currency = ipData.country_code === 'IN' ? 'INR' : 'USD';
-                } catch(e) {}
-                const orderRes = await fetch('/create-order', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ currency })
-                });
-                const orderData = await orderRes.json();
-                if (!orderData.success) throw new Error('Order creation failed');
-                const options = {
-                    key: 'rzp_live_T11lDmNXefzXUk',
-                    amount: orderData.order.amount,
-                    currency: orderData.order.currency,
-                    name: 'Repurposer AI',
-                    description: 'Pro Plan - Unlimited Repurposes',
-                    order_id: orderData.order.id,
-                    handler: async function(response) {
-                        const verifyRes = await fetch('/verify-payment', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(response)
-                        });
-                        const verifyData = await verifyRes.json();
-                        if (verifyData.success) {
-                            localStorage.setItem('repurposer_pro', 'true');
-                            alert('🎉 Welcome to Pro! Unlimited repurposes unlocked!');
-                            hideUpgrade();
-                            updateUsageBar();
-                        } else {
-                            alert('Payment verification failed. Contact support.');
-                        }
-                    },
-                    prefill: { name: '', email: '', contact: '' },
-                    theme: { color: '#667eea' }
-                };
-                const rzp = new Razorpay(options);
-                rzp.open();
-            } catch(err) {
-                alert('Payment failed: ' + err.message);
-            } finally {
-                btn.textContent = '⚡ Upgrade to Pro';
-                btn.style.opacity = '1';
-            }
-        }
-
-        // Init
-        updateUsageBar();
-        if (getTodayUsage() >= FREE_LIMIT) { showUpgrade(); }
     </script>
 </body>
 </html>
